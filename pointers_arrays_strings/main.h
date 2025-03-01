@@ -17,5 +17,7 @@ char *_strcat(char *dest, char *src);
 char *_strncat(char *dest, char *src, int n);
 void reverse_array(int *a, int n);
 void print_rev(char *s);
+char *string_toupper(char *str);
+void rev_string(char *s);
 
 #endif /* MAIN_H */
