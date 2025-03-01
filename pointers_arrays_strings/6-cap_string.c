@@ -21,12 +21,12 @@ char *cap_string(char *str)
 			if (str[i] == separators[j])
 			{
 				capitalize = 1;
-				break; /* On arrête la boucle car on a trouvé un séparateur */
+				break;
 			}
 			j++;
 		}
 
-		/* Si on doit capitaliser une lettre minuscule */
+		/* Capitaliser si nécessaire */
 		if (capitalize && str[i] >= 'a' && str[i] <= 'z')
 		{
 			str[i] -= 32;
@@ -34,7 +34,7 @@ char *cap_string(char *str)
 		}
 		else if (str[i] >= 'A' && str[i] <= 'Z')
 		{
-			capitalize = 0; /* Si c'est une majuscule, on continue normalement */
+			capitalize = 0;
 		}
 
 		i++;
