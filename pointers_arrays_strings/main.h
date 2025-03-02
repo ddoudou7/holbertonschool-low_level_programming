@@ -24,6 +24,13 @@ char *string_toupper(char *str);
  * Return: Pointer to the modified string
  */
 char *cap_string(char *str);
+/**
+ * leet - Encodes a string into 1337
+ * @str: The string to encode
+ *
+ * Return: Pointer to the modified string
+ */
+char *leet(char *str);
 
 #endif /* MAIN_H */
 
