@@ -1,42 +1,51 @@
 #include "main.h"
 
 /**
- * cap_string - Capitalizes all words of a string.
+ * is_separator - Checks if a character is a separator
+ * @c: The character to check
+ *
+ * Description: This function checks if the given character `c`
+ * is one of the predefined word separators: space, tab, newline,
+ * comma, semicolon, period, exclamation mark, question mark,
+ * double quote, parenthesis, or curly braces.
+ *
+ * Return: 1 if the character is a separator, 0 otherwise.
+ */
+int is_separator(char c)
+{
+	char separators[] = " \t\n,;.!?\"(){}";
+	int j;
+
+	for (j = 0; separators[j] != '\0'; j++)
+	{
+		if (c == separators[j])
+			return (1);
+	}
+	return (0);
+}
+
+/**
+ * cap_string - Capitalizes all words of a string
  * @str: The string to modify
  *
- * Return: Pointer to the modified string
+ * Description: This function takes a string and capitalizes
+ * the first letter of each word. A word is defined as any
+ * sequence of characters separated by the predefined word
+ * separators (spaces, punctuation marks, etc.).
+ *
+ * Return: Pointer to the modified string.
  */
 char *cap_string(char *str)
 {
-	int i = 0, capitalize = 1;
-	char separators[] = " \t\n,;.!?\"(){}";
+	int i = 0;
+	int capitalize_next = 1;
 
-	while (str[i] != '\0')
+	while (str[i])
 	{
-		int j = 0;
-
-		/* Vérifier si on est sur un séparateur */
-		while (separators[j] != '\0')
-		{
-			if (str[i] == separators[j])
-			{
-				capitalize = 1;
-				break;
-			}
-			j++;
-		}
-
-		/* Capitaliser si nécessaire */
-		if (capitalize && str[i] >= 'a' && str[i] <= 'z')
-		{
+		if (capitalize_next && str[i] >= 'a' && str[i] <= 'z')
 			str[i] -= 32;
-			capitalize = 0;
-		}
-		else if (str[i] >= 'A' && str[i] <= 'Z')
-		{
-			capitalize = 0;
-		}
 
+		capitalize_next = is_separator(str[i]);
 		i++;
 	}
 
