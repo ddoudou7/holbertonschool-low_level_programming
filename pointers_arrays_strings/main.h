@@ -31,6 +31,7 @@ char *cap_string(char *str);
  * Return: Pointer to the modified string
  */
 char *leet(char *str);
+char *_memset(char *s, char b, unsigned int n);
 
 #endif /* MAIN_H */
 
