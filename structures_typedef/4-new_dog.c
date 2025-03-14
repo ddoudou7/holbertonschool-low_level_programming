@@ -9,27 +9,27 @@
  */
 char *_strdup(char *str)
 {
-    char *dup;
-    int i = 0;
+	char *dup;
+	int i = 0;
 
-    if (str == NULL)
-        return (NULL);
+	if (str == NULL)
+		return (NULL);
 
-    /* Calculer la longueur de la chaîne sans strlen */
-    while (str[i] != '\0')
-        i++;
+	/* Calculer la longueur de la chaîne */
+	while (str[i] != '\0')
+		i++;
 
-    /* Allouer de la mémoire pour la copie */
-    dup = malloc(sizeof(char) * (i + 1));
-    if (dup == NULL)
-        return (NULL);
+	/* Allouer de la mémoire pour la copie */
+	dup = malloc(sizeof(char) * (i + 1));
+	if (dup == NULL)
+		return (NULL);
 
-    /* Copier la chaîne */
-    for (i = 0; str[i] != '\0'; i++)
-        dup[i] = str[i];
-    dup[i] = '\0';
+	/* Copier la chaîne */
+	for (i = 0; str[i] != '\0'; i++)
+		dup[i] = str[i];
+	dup[i] = '\0';
 
-    return (dup);
+	return (dup);
 }
 
 /**
@@ -42,29 +42,29 @@ char *_strdup(char *str)
  */
 dog_t *new_dog(char *name, float age, char *owner)
 {
-    dog_t *dog;
+	dog_t *dog;
 
-    dog = malloc(sizeof(dog_t));
-    if (dog == NULL)
-        return (NULL);
+	dog = malloc(sizeof(dog_t));
+	if (dog == NULL)
+		return (NULL);
 
-    dog->name = _strdup(name);
-    if (dog->name == NULL)
-    {
-        free(dog);
-        return (NULL);
-    }
+	dog->name = _strdup(name);
+	if (dog->name == NULL)
+	{
+		free(dog);
+		return (NULL);
+	}
 
-    dog->owner = _strdup(owner);
-    if (dog->owner == NULL)
-    {
-        free(dog->name);
-        free(dog);
-        return (NULL);
-    }
+	dog->owner = _strdup(owner);
+	if (dog->owner == NULL)
+	{
+		free(dog->name);
+		free(dog);
+		return (NULL);
+	}
 
-    dog->age = age;
+	dog->age = age;
 
-    return (dog);
+	return (dog);
 }
 
