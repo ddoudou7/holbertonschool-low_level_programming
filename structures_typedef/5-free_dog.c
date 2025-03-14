@@ -4,16 +4,19 @@
 /**
  * free_dog - Frees memory allocated for a dog
  * @d: Pointer to the dog to be freed
+ *
+ * Description: This function frees the memory allocated for the dog structure
+ * and its members (name and owner).
  */
 void free_dog(dog_t *d)
 {
-    if (d != NULL)  /* Vérifie que d n'est pas NULL */
-    {
-        if (d->name != NULL)  /* Vérifie que name n'est pas NULL avant de le libérer */
-            free(d->name);
-        if (d->owner != NULL)  /* Vérifie que owner n'est pas NULL avant de le libérer */
-            free(d->owner);
-        free(d);  /* Libère la structure elle-même */
-    }
+	if (d != NULL)
+	{
+		if (d->name != NULL)
+			free(d->name);
+		if (d->owner != NULL)
+			free(d->owner);
+		free(d);
+	}
 }
 
