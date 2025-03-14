@@ -1,9 +1,8 @@
 #include <stdlib.h>
-#include <string.h>
 #include "dog.h"
 
 /**
- * _strdup - Creates a duplicate of a string
+ * _strdup - Creates a duplicate of a string without using strlen
  * @str: The string to duplicate
  *
  * Return: Pointer to the duplicated string or NULL if failure.
@@ -11,18 +10,24 @@
 char *_strdup(char *str)
 {
     char *dup;
-    int len, i;
+    int i = 0;
 
     if (str == NULL)
         return (NULL);
 
-    len = strlen(str);
-    dup = malloc(sizeof(char) * (len + 1));
+    /* Calculer la longueur de la chaîne sans strlen */
+    while (str[i] != '\0')
+        i++;
+
+    /* Allouer de la mémoire pour la copie */
+    dup = malloc(sizeof(char) * (i + 1));
     if (dup == NULL)
         return (NULL);
 
-    for (i = 0; i <= len; i++)
+    /* Copier la chaîne */
+    for (i = 0; str[i] != '\0'; i++)
         dup[i] = str[i];
+    dup[i] = '\0';
 
     return (dup);
 }
