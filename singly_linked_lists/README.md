@@ -1,12 +1,6 @@
-# Singly Linked Lists
+# Doubly Linked Lists
 
-This project is about implementing and manipulating singly linked lists in C.
+This project explores doubly linked lists in C.
 
-Functions include:
-- Printing all elements of a list
-- Adding nodes
-- Freeing the list
-- And more...
-
-Compliant with Betty style and compiled with gcc using strict flags.
+Each node has a pointer to both the next and previous node.
 
