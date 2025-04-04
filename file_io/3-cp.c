@@ -8,10 +8,9 @@
 
 /**
  * main - Entry point of the program
- * @argc: Number of arguments passed to the program
- * @argv: Array of pointers to the arguments
- *
- * Return: Always 0 on success
+ * @argc: Number of arguments
+ * @argv: Argument values
+ * Return: 0 on success, exits with specific code on error
  */
 int main(int argc, char *argv[])
 {
@@ -65,13 +64,11 @@ int main(int argc, char *argv[])
 		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_from);
 		exit(100);
 	}
-
 	if (close(fd_to) == -1)
 	{
 		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
 		exit(100);
 	}
-
 	return (0);
 }
 
