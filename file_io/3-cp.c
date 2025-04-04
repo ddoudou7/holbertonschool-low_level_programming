@@ -7,9 +7,9 @@
 #define BUFFER_SIZE 1024
 
 /**
- * print_error - prints a formatted error and exits
- * @msg: the error message format
- * @arg: argument for the error message
+ * print_error - Print an error message and exit
+ * @msg: the message to print
+ * @arg: argument for the message
  * @code: exit code
  */
 void print_error(const char *msg, const char *arg, int code)
@@ -19,8 +19,8 @@ void print_error(const char *msg, const char *arg, int code)
 }
 
 /**
- * close_fd - closes a file descriptor and handles errors
- * @fd: file descriptor to close
+ * close_fd - Close a file descriptor
+ * @fd: the descriptor to close
  */
 void close_fd(int fd)
 {
@@ -32,14 +32,15 @@ void close_fd(int fd)
 }
 
 /**
- * main - copies the content of a file to another file
+ * main - Copy content of one file into another
  * @ac: argument count
  * @av: argument vector
  * Return: 0 on success
  */
 int main(int ac, char **av)
 {
-	int fd_from, fd_to, r, w;
+	int fd_from, fd_to;
+	ssize_t r, w;
 	char buffer[BUFFER_SIZE];
 
 	if (ac != 3)
