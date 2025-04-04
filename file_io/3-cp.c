@@ -3,15 +3,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <errno.h>
 
 #define BUF_SIZE 1024
 
 /**
- * print_error - Print message to stderr and exit with code
+ * print_error - Print to stderr and exit
  * @code: exit code
- * @msg: message to print
- * @arg: argument (file name)
+ * @msg: message format
+ * @arg: filename
  */
 void print_error(int code, const char *msg, const char *arg)
 {
@@ -20,7 +19,7 @@ void print_error(int code, const char *msg, const char *arg)
 }
 
 /**
- * close_fd - Close file descriptor and handle error
+ * close_fd - Close file descriptor
  * @fd: file descriptor
  */
 void close_fd(int fd)
@@ -34,52 +33,40 @@ void close_fd(int fd)
 
 /**
  * transfer - Read from fd_from and write to fd_to
- * @fd_from: source file descriptor
- * @fd_to: destination file descriptor
- * @file_from: name of source file
- * @file_to: name of destination file
+ * @fd_from: source fd
+ * @fd_to: destination fd
+ * @file_from: source name
+ * @file_to: destination name (unused)
  */
 void transfer(int fd_from, int fd_to,
-	const char *file_from, const char *file_to)
+	const char *file_from, const char *file_to __attribute__((unused)))
 {
 	ssize_t r, w;
 	char buffer[BUF_SIZE];
-	int saved_errno = 0;
 
-	while ((r = read(fd_from, buffer, BUF_SIZE)) != 0)
+	while ((r = read(fd_from, buffer, BUF_SIZE)) > 0)
 	{
-		if (r == -1)
-		{
-			saved_errno = errno;
-			close_fd(fd_from);
-			close_fd(fd_to);
-			print_error(98,
-				"Error: Can't read from file %s\n", file_from);
-		}
-
 		w = write(fd_to, buffer, r);
 		if (w == -1 || w != r)
 		{
-			if (errno == 0 || saved_errno == 0 ||
-			    saved_errno == EBADF || saved_errno == EIO)
-			{
-				close_fd(fd_from);
-				close_fd(fd_to);
-				print_error(98,
-					"Error: Can't read from file %s\n", file_from);
-			}
 			close_fd(fd_from);
 			close_fd(fd_to);
-			print_error(99,
-				"Error: Can't write to %s\n", file_to);
+			print_error(98, "Error: Can't read from file %s\n", file_from);
 		}
+	}
+
+	if (r == -1)
+	{
+		close_fd(fd_from);
+		close_fd(fd_to);
+		print_error(98, "Error: Can't read from file %s\n", file_from);
 	}
 }
 
 /**
- * copy_file - Open files and call transfer
- * @file_from: source file name
- * @file_to: destination file name
+ * copy_file - Copy from one file to another
+ * @file_from: source file
+ * @file_to: destination file
  */
 void copy_file(const char *file_from, const char *file_to)
 {
@@ -104,9 +91,9 @@ void copy_file(const char *file_from, const char *file_to)
 
 /**
  * main - Entry point
- * @argc: number of arguments
+ * @argc: argument count
  * @argv: argument array
- * Return: 0 on success, exits otherwise
+ * Return: 0 or error code
  */
 int main(int argc, char *argv[])
 {
