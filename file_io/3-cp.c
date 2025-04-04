@@ -38,7 +38,8 @@ int main(int ac, char **av)
 		exit(99);
 	}
 
-	while (1)
+	r = 1;
+	while (r > 0)
 	{
 		r = read(fd_from, buffer, BUFFER_SIZE);
 		if (r == -1)
@@ -48,16 +49,17 @@ int main(int ac, char **av)
 			close(fd_to);
 			exit(98);
 		}
-		if (r == 0)
-			break;
 
-		w = write(fd_to, buffer, r);
-		if (w == -1 || w != r)
+		if (r > 0)
 		{
-			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", av[2]);
-			close(fd_from);
-			close(fd_to);
-			exit(99);
+			w = write(fd_to, buffer, r);
+			if (w == -1 || w != r)
+			{
+				dprintf(STDERR_FILENO, "Error: Can't write to %s\n", av[2]);
+				close(fd_from);
+				close(fd_to);
+				exit(99);
+			}
 		}
 	}
 
