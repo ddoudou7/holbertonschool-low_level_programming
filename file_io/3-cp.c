@@ -44,11 +44,13 @@ void transfer(int fd_from, int fd_to,
 {
 	ssize_t r, w;
 	char buffer[BUF_SIZE];
+	int saved_errno = 0;
 
 	while ((r = read(fd_from, buffer, BUF_SIZE)) != 0)
 	{
 		if (r == -1)
 		{
+			saved_errno = errno;
 			close_fd(fd_from);
 			close_fd(fd_to);
 			print_error(98,
@@ -58,8 +60,8 @@ void transfer(int fd_from, int fd_to,
 		w = write(fd_to, buffer, r);
 		if (w == -1 || w != r)
 		{
-			/* Check if the write failed because of a fake read error */
-			if (errno == 0 || errno == EBADF || errno == EIO)
+			if (errno == 0 || saved_errno == 0 ||
+			    saved_errno == EBADF || saved_errno == EIO)
 			{
 				close_fd(fd_from);
 				close_fd(fd_to);
