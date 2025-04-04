@@ -46,7 +46,7 @@ int open_dest_file(const char *file_to, int fd_from)
  * transfer_data - reads from fd_from, writes to fd_to
  * @fd_from: source file descriptor
  * @fd_to: destination file descriptor
- * @file_from: source file name (for error messages)
+ * @file_from: source file name
  * @file_to: destination file name
  */
 void transfer_data(int fd_from, int fd_to,
@@ -76,7 +76,7 @@ void transfer_data(int fd_from, int fd_to,
 }
 
 /**
- * copy_file - handles the copy logic
+ * copy_file - performs file copy operations
  * @file_from: source file name
  * @file_to: destination file name
  */
@@ -87,13 +87,12 @@ void copy_file(const char *file_from, const char *file_to)
 
 	fd_from = open_source_file(file_from);
 
-	if (read(fd_from, test_buf, 1) == -1)
+	if (read(fd_from, test_buf, 0) == -1)
 	{
 		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file_from);
 		close(fd_from);
 		exit(98);
 	}
-	lseek(fd_from, 0, SEEK_SET);
 
 	fd_to = open_dest_file(file_to, fd_from);
 	transfer_data(fd_from, fd_to, file_from, file_to);
