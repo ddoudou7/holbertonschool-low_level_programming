@@ -50,10 +50,20 @@ int main(int argc, char *argv[])
 		print_error(99, "Error: Can't write to %s\n", argv[2]);
 	}
 
-	while ((r = read(fd_from, buffer, BUF_SIZE)) > 0)
+	while (1)
 	{
+		r = read(fd_from, buffer, BUF_SIZE);
+		if (r == -1)
+		{
+			close_fd(fd_from);
+			close_fd(fd_to);
+			print_error(98, "Error: Can't read from file %s\n", argv[1]);
+		}
+		if (r == 0)
+			break;
+
 		w = write(fd_to, buffer, r);
-		if (w != r)
+		if (w == -1 || w != r)
 		{
 			close_fd(fd_from);
 			close_fd(fd_to);
@@ -61,14 +71,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (r == -1)
-	{
-		close_fd(fd_from);
-		close_fd(fd_to);
-		print_error(98, "Error: Can't read from file %s\n", argv[1]);
-	}
-
 	close_fd(fd_from);
 	close_fd(fd_to);
 	return (0);
 }
+
