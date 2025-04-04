@@ -1,9 +1,11 @@
-cat << 'EOF' > main.h
 #ifndef MAIN_H
 #define MAIN_H
 
-int _putchar(char c);
+#include <unistd.h>
 
-#endif
-EOF
+int _putchar(char c);
+void print_error(int code, const char *msg, const char *arg);
+void close_fd(int fd);
+
+#endif /* MAIN_H */
 
