@@ -7,20 +7,20 @@
 #define BUFFER_SIZE 1024
 
 /**
- * print_error - prints error message and exits with given code
- * @message: message to print
- * @arg: argument to include in message
- * @exit_code: exit code
+ * print_error - prints a formatted error and exits
+ * @msg: the error message format
+ * @arg: argument for the error message
+ * @code: exit code
  */
-void print_error(const char *message, const char *arg, int exit_code)
+void print_error(const char *msg, const char *arg, int code)
 {
-	dprintf(STDERR_FILENO, message, arg);
-	exit(exit_code);
+	dprintf(STDERR_FILENO, msg, arg);
+	exit(code);
 }
 
 /**
- * close_fd - closes a file descriptor and handles errors
- * @fd: file descriptor to close
+ * close_fd - closes a file descriptor and exits on failure
+ * @fd: the file descriptor to close
  */
 void close_fd(int fd)
 {
@@ -56,8 +56,18 @@ int main(int ac, char **av)
 		print_error("Error: Can't write to %s\n", av[2], 99);
 	}
 
-	while ((r = read(fd_from, buffer, BUFFER_SIZE)) > 0)
+	while (1)
 	{
+		r = read(fd_from, buffer, BUFFER_SIZE);
+		if (r == -1)
+		{
+			close_fd(fd_from);
+			close_fd(fd_to);
+			print_error("Error: Can't read from file %s\n", av[1], 98);
+		}
+		if (r == 0)
+			break;
+
 		w = write(fd_to, buffer, r);
 		if (w == -1 || w != r)
 		{
@@ -65,13 +75,6 @@ int main(int ac, char **av)
 			close_fd(fd_to);
 			print_error("Error: Can't write to %s\n", av[2], 99);
 		}
-	}
-
-	if (r == -1)
-	{
-		close_fd(fd_from);
-		close_fd(fd_to);
-		print_error("Error: Can't read from file %s\n", av[1], 98);
 	}
 
 	close_fd(fd_from);
