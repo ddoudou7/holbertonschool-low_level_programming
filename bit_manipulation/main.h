@@ -4,3 +4,4 @@
 unsigned int binary_to_uint(const char *b);
 
 #endif
+void print_binary(unsigned long int n);
