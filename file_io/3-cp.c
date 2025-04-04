@@ -3,11 +3,15 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #define BUF_SIZE 1024
 
 /**
  * print_error - Print message to stderr and exit with code
+ * @code: exit value to return
+ * @msg: error message to display
+ * @arg: argument (file name)
  */
 void print_error(int code, const char *msg, const char *arg)
 {
@@ -17,6 +21,7 @@ void print_error(int code, const char *msg, const char *arg)
 
 /**
  * close_fd - Close a file descriptor and handle error
+ * @fd: file descriptor to close
  */
 void close_fd(int fd)
 {
@@ -29,6 +34,9 @@ void close_fd(int fd)
 
 /**
  * main - Copies file_from to file_to
+ * @argc: number of arguments
+ * @argv: array of arguments
+ * Return: 0 on success, exits with error code otherwise
  */
 int main(int argc, char *argv[])
 {
@@ -65,6 +73,12 @@ int main(int argc, char *argv[])
 		w = write(fd_to, buffer, r);
 		if (w == -1 || w != r)
 		{
+			if (errno == EBADF || errno == EIO)
+			{
+				close_fd(fd_from);
+				close_fd(fd_to);
+				print_error(98, "Error: Can't read from file %s\n", argv[1]);
+			}
 			close_fd(fd_from);
 			close_fd(fd_to);
 			print_error(99, "Error: Can't write to %s\n", argv[2]);
