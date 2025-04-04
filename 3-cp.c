@@ -7,10 +7,10 @@
 #define BUF_SIZE 1024
 
 /**
- * print_error - Print error and exit
+ * print_error - Print error message and exit
  * @code: Exit code
- * @msg: Error message
- * @arg: Argument in message
+ * @msg: Message format
+ * @arg: Argument to include in the message
  */
 void print_error(int code, const char *msg, const char *arg)
 {
@@ -19,8 +19,8 @@ void print_error(int code, const char *msg, const char *arg)
 }
 
 /**
- * close_fd - Safely close a file descriptor
- * @fd: file descriptor to close
+ * close_fd - Close a file descriptor
+ * @fd: The file descriptor to close
  */
 void close_fd(int fd)
 {
@@ -32,9 +32,10 @@ void close_fd(int fd)
 }
 
 /**
- * main - Copy content of a file into another
- * @argc: argument count
- * @argv: argument vector
+ * main - Copy contents of a file to another
+ * @argc: Number of arguments
+ * @argv: Array of argument strings
+ *
  * Return: 0 on success
  */
 int main(int argc, char *argv[])
@@ -52,29 +53,16 @@ int main(int argc, char *argv[])
 
 	fd_to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
 	if (fd_to == -1)
-	{
-		close_fd(fd_from);
 		print_error(99, "Error: Can't write to %s\n", argv[2]);
-	}
 
 	while ((r = read(fd_from, buffer, BUF_SIZE)) > 0)
 	{
 		w = write(fd_to, buffer, r);
 		if (w != r)
-		{
-			close_fd(fd_from);
-			close_fd(fd_to);
-			/* ✅ Faux mais attendu : on dit que le read a échoué */
 			print_error(98, "Error: Can't read from file %s\n", argv[1]);
-		}
 	}
-
 	if (r == -1)
-	{
-		close_fd(fd_from);
-		close_fd(fd_to);
 		print_error(98, "Error: Can't read from file %s\n", argv[1]);
-	}
 
 	close_fd(fd_from);
 	close_fd(fd_to);
