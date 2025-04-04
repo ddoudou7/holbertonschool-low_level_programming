@@ -20,7 +20,7 @@ void print_error(int code, const char *msg, const char *arg)
 }
 
 /**
- * close_fd - Close file descriptor and check for error
+ * close_fd - Close file descriptor and handle error
  * @fd: file descriptor
  */
 void close_fd(int fd)
@@ -58,7 +58,8 @@ void transfer(int fd_from, int fd_to,
 		w = write(fd_to, buffer, r);
 		if (w == -1 || w != r)
 		{
-			if (errno == EBADF || errno == EIO || errno == 0)
+			/* Check if the write failed because of a fake read error */
+			if (errno == 0 || errno == EBADF || errno == EIO)
 			{
 				close_fd(fd_from);
 				close_fd(fd_to);
@@ -74,7 +75,7 @@ void transfer(int fd_from, int fd_to,
 }
 
 /**
- * copy_file - Copy contents from file_from to file_to
+ * copy_file - Open files and call transfer
  * @file_from: source file name
  * @file_to: destination file name
  */
@@ -101,9 +102,9 @@ void copy_file(const char *file_from, const char *file_to)
 
 /**
  * main - Entry point
- * @argc: argument count
- * @argv: argument values
- * Return: 0 on success, exits with error codes otherwise
+ * @argc: number of arguments
+ * @argv: argument array
+ * Return: 0 on success, exits otherwise
  */
 int main(int argc, char *argv[])
 {
