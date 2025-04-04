@@ -9,9 +9,9 @@
 
 /**
  * print_error - Print message to stderr and exit with code
- * @code: exit value to return
- * @msg: error message to display
- * @arg: argument (file name)
+ * @code: exit status to return
+ * @msg: error message to print
+ * @arg: argument (filename)
  */
 void print_error(int code, const char *msg, const char *arg)
 {
@@ -20,8 +20,8 @@ void print_error(int code, const char *msg, const char *arg)
 }
 
 /**
- * close_fd - Close a file descriptor and handle error
- * @fd: file descriptor to close
+ * close_fd - Close a file descriptor and check for error
+ * @fd: the file descriptor to close
  */
 void close_fd(int fd)
 {
@@ -33,10 +33,10 @@ void close_fd(int fd)
 }
 
 /**
- * main - Copies file_from to file_to
+ * main - Entry point, copies content of a file to another
  * @argc: number of arguments
  * @argv: array of arguments
- * Return: 0 on success, exits with error code otherwise
+ * Return: 0 on success, exits with codes on failure
  */
 int main(int argc, char *argv[])
 {
@@ -58,32 +58,21 @@ int main(int argc, char *argv[])
 		print_error(99, "Error: Can't write to %s\n", argv[2]);
 	}
 
-	while (1)
+	while ((r = read(fd_from, buffer, BUF_SIZE)) > 0)
 	{
-		r = read(fd_from, buffer, BUF_SIZE);
-		if (r == -1)
-		{
-			close_fd(fd_from);
-			close_fd(fd_to);
-			print_error(98, "Error: Can't read from file %s\n", argv[1]);
-		}
-		if (r == 0)
-			break;
-
 		w = write(fd_to, buffer, r);
 		if (w == -1 || w != r)
 		{
 			if (errno == EBADF || errno == EIO)
-			{
-				close_fd(fd_from);
-				close_fd(fd_to);
 				print_error(98, "Error: Can't read from file %s\n", argv[1]);
-			}
+
 			close_fd(fd_from);
 			close_fd(fd_to);
 			print_error(99, "Error: Can't write to %s\n", argv[2]);
 		}
 	}
+	if (r == -1)
+		print_error(98, "Error: Can't read from file %s\n", argv[1]);
 
 	close_fd(fd_from);
 	close_fd(fd_to);
