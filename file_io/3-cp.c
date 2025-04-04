@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
 {
 	int fd_from, fd_to, r, w;
 	char buffer[1024];
-	ssize_t test_read;
 
 	if (argc != 3)
 	{
@@ -23,24 +22,6 @@ int main(int argc, char *argv[])
 		exit(97);
 	}
 
-	fd_from = open(argv[1], O_RDONLY);
-	if (fd_from == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
-		exit(98);
-	}
-
-	/* Test reading 1 byte to check for read errors */
-	test_read = read(fd_from, buffer, 1);
-	if (test_read == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
-		close(fd_from);
-		exit(98);
-	}
-	close(fd_from);
-
-	/* Reopen source file from the beginning */
 	fd_from = open(argv[1], O_RDONLY);
 	if (fd_from == -1)
 	{
