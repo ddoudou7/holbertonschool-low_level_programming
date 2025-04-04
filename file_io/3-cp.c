@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #define BUF_SIZE 1024
+void copy_file(const char *file_from, const char *file_to);
 
 /**
  * open_source_file - opens the source file
@@ -49,30 +50,62 @@ int open_dest_file(const char *file_to, int fd_from)
  * @file_from: source file name
  * @file_to: destination file name
  */
-void transfer_data(int fd_from, int fd_to,
-		   const char *file_from, const char *file_to)
-{
-	ssize_t r, w;
-	char buf[BUF_SIZE];
+/**
+ * transfer_data - reads from fd_from, writes to fd_to
+ * @fd_from: source file descriptor
+ * @fd_to: destination file descriptor
+ * @file_from: source file name
+ * @file_to: destination file name
+ */
 
-	while ((r = read(fd_from, buf, BUF_SIZE)) > 0)
+/**
+ * main - entry point
+ * @argc: argument count
+ * @argv: argument values
+ * Return: 0 on success
+ */
+int main(int argc, char *argv[])
+{
+	if (argc != 3)
 	{
-		w = write(fd_to, buf, r);
-		if (w != r)
-		{
-			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file_to);
-			close(fd_from);
-			close(fd_to);
-			exit(99);
-		}
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+		exit(97);
 	}
-	if (r == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file_from);
-		close(fd_from);
-		close(fd_to);
-		exit(98);
-	}
+	copy_file(argv[1], argv[2]);
+	return (0);
+}
+
+/**
+ * transfer_data - reads from fd_from, writes to fd_to
+ * @fd_from: source file descriptor
+ * @fd_to: destination file descriptor
+ * @file_from: source file name
+ * @file_to: destination file name
+ */
+void transfer_data(int fd_from, int fd_to,
+                   const char *file_from, const char *file_to)
+{
+        ssize_t r, w;
+        char buf[1024];
+
+        while ((r = read(fd_from, buf, 1024)) > 0)
+        {
+                w = write(fd_to, buf, r);
+                if (w == -1 || w != r)
+                {
+                        dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file_to);
+                        close(fd_from);
+                        close(fd_to);
+                        exit(99);
+                }
+        }
+        if (r == -1)
+        {
+                dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file_from);
+                close(fd_from);
+                close(fd_to);
+                exit(98);
+        }
 }
 
 /**
@@ -107,21 +140,4 @@ void copy_file(const char *file_from, const char *file_to)
 		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
 		exit(100);
 	}
-}
-
-/**
- * main - entry point
- * @argc: argument count
- * @argv: argument values
- * Return: 0 on success
- */
-int main(int argc, char *argv[])
-{
-	if (argc != 3)
-	{
-		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-		exit(97);
-	}
-	copy_file(argv[1], argv[2]);
-	return (0);
 }
