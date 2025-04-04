@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 {
     int fd_from, fd_to, r, w;
     char buffer[1024];
+    ssize_t test_read;
 
     if (argc != 3)
     {
@@ -29,6 +30,16 @@ int main(int argc, char *argv[])
         exit(98);
     }
 
+    /* Test read: attempt to read 1 byte; if it fails, exit(98) */
+    test_read = read(fd_from, buffer, 1);
+    if (test_read == -1)
+    {
+        dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
+        close(fd_from);
+        exit(98);
+    }
+    lseek(fd_from, 0, SEEK_SET);
+
     fd_to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
     if (fd_to == -1)
     {
@@ -39,13 +50,18 @@ int main(int argc, char *argv[])
 
     while ((r = read(fd_from, buffer, 1024)) > 0)
     {
-        w = write(fd_to, buffer, r);
-        if (w != r)
+        ssize_t total_written = 0;
+        while (total_written < r)
         {
-            dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
-            close(fd_from);
-            close(fd_to);
-            exit(99);
+            w = write(fd_to, buffer + total_written, r - total_written);
+            if (w == -1)
+            {
+                dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
+                close(fd_from);
+                close(fd_to);
+                exit(99);
+            }
+            total_written += w;
         }
     }
     if (r == -1)
@@ -66,6 +82,5 @@ int main(int argc, char *argv[])
         dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd_to);
         exit(100);
     }
-
     return (0);
 }
