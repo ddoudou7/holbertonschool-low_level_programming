@@ -33,10 +33,11 @@ void close_fd(int fd)
 
 /**
  * transfer - Read from fd_from and write to fd_to
+ * Always exits with 98 on any read OR write failure
  * @fd_from: source fd
  * @fd_to: destination fd
- * @file_from: source name
- * @file_to: destination name (unused)
+ * @file_from: file name (source)
+ * @file_to: file name (unused, but required)
  */
 void transfer(int fd_from, int fd_to,
 	const char *file_from, const char *file_to __attribute__((unused)))
@@ -47,7 +48,7 @@ void transfer(int fd_from, int fd_to,
 	while ((r = read(fd_from, buffer, BUF_SIZE)) > 0)
 	{
 		w = write(fd_to, buffer, r);
-		if (w == -1 || w != r)
+		if (w != r)
 		{
 			close_fd(fd_from);
 			close_fd(fd_to);
@@ -64,9 +65,9 @@ void transfer(int fd_from, int fd_to,
 }
 
 /**
- * copy_file - Copy from one file to another
- * @file_from: source file
- * @file_to: destination file
+ * copy_file - Open files and transfer contents
+ * @file_from: source file name
+ * @file_to: destination file name
  */
 void copy_file(const char *file_from, const char *file_to)
 {
@@ -91,9 +92,9 @@ void copy_file(const char *file_from, const char *file_to)
 
 /**
  * main - Entry point
- * @argc: argument count
- * @argv: argument array
- * Return: 0 or error code
+ * @argc: number of args
+ * @argv: array of args
+ * Return: 0 or exits with code
  */
 int main(int argc, char *argv[])
 {
