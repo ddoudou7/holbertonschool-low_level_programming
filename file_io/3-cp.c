@@ -45,10 +45,10 @@ int main(int argc, char *argv[])
 		bytes_written = write(fd_to, buf, bytes_read);
 		if (bytes_written != bytes_read)
 		{
-			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
+			dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
 			close(fd_from);
 			close(fd_to);
-			exit(99);
+			exit(98);
 		}
 	}
 
